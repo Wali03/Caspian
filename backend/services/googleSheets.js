@@ -1,5 +1,6 @@
 const { GoogleAuth } = require('google-auth-library');
 const { google } = require('googleapis');
+const { formatISTDate } = require('../utils/timeUtils');
 
 class GoogleSheetsService {
   constructor() {
@@ -172,8 +173,8 @@ class GoogleSheetsService {
         user.name,
         user.email,
         coupon.offerDescription,
-        new Date(coupon.createdAt).toLocaleString('en-IN'),
-        new Date(coupon.expiresAt).toLocaleString('en-IN'),
+        formatISTDate(coupon.createdAt),
+        formatISTDate(coupon.expiresAt),
         'Active',
         '', // Used At
         user._id || user.id
@@ -230,7 +231,7 @@ class GoogleSheetsService {
             range: `${this.sheetName}!G${i + 1}:H${i + 1}`, // G=Status, H=Used At
             valueInputOption: 'RAW',
             resource: {
-              values: [[status, new Date().toLocaleString('en-IN')]]
+              values: [[status, formatISTDate(new Date())]]
             }
           });
 

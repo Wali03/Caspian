@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { getCouponExpiryDate } = require('../utils/timeUtils');
 
 // Generate random alphanumeric coupon code
 function generateCouponCode() {
@@ -28,7 +29,7 @@ const couponSchema = new mongoose.Schema({
       'TANDOOR_10_PERCENT_OFF',
       'BOWL_FREE_ADDON',
       'CHINESE_HONEY_CHILI_POTATO',
-      'CHINESE_MEAL_HONEY_CHILI',
+      'THAI_CURRY_BEVERAGE',
       'FLAT_20_PERCENT_OFF_2000',
       'FREE_MOCKTAIL_BIRYANI'
     ]
@@ -53,7 +54,7 @@ const couponSchema = new mongoose.Schema({
     type: Date,
     required: true,
     default: function() {
-      return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+      return getCouponExpiryDate(); // 7 days from now in IST
     }
   },
   isActive: {
@@ -72,7 +73,7 @@ const couponSchema = new mongoose.Schema({
     },
     applicableSection: {
       type: String,
-      enum: ['BREAKFAST', 'NONVEG', 'TANDOOR', 'BOWL', 'CHINESE', 'ALL'],
+      enum: ['BREAKFAST', 'NONVEG', 'TANDOOR', 'BOWL', 'CHINESE', 'THAI', 'ALL'],
       default: 'ALL'
     }
   }

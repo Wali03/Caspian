@@ -47,10 +47,10 @@ const OFFERS = [
     }
   },
   {
-    type: 'CHINESE_MEAL_HONEY_CHILI',
-    description: 'Have a full course Chinese meal and get honey chili potato from us.',
+    type: 'THAI_CURRY_BEVERAGE',
+    description: 'Have a full course Thai curry and get beverage from us.',
     conditions: {
-      applicableSection: 'CHINESE'
+      applicableSection: 'THAI'
     }
   },
   {
@@ -108,13 +108,10 @@ const spinWheel = async (req, res) => {
       });
     }
 
-    // Get the selected offer index from frontend (or generate random if not provided)
-    const selectedOfferIndex = req.body.selectedOfferIndex !== undefined 
-      ? req.body.selectedOfferIndex 
-      : Math.floor(Math.random() * OFFERS.length);
-    
+    // Generate random offer index (0-7)
+    const selectedOfferIndex = Math.floor(Math.random() * OFFERS.length);
     const randomOffer = OFFERS[selectedOfferIndex];
-    console.log('🎲 Selected offer index:', selectedOfferIndex, 'offer:', randomOffer.type);
+    console.log('🎲 Backend selected offer index:', selectedOfferIndex, 'offer:', randomOffer.type);
 
     // Generate unique coupon code
     function generateCouponCode() {
@@ -162,6 +159,7 @@ const spinWheel = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Congratulations! You won a coupon!',
+      winningSegmentIndex: selectedOfferIndex,
       coupon: {
         id: coupon._id,
         code: coupon.code,
