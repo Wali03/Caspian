@@ -2,26 +2,22 @@
 
 /**
  * Convert GMT date to IST (GMT + 5:30)
- * @param {Date} gmtDate - Date in GMT
- * @returns {Date} Date in IST
+ * Note: Not needed if server is already in IST timezone
+ * @param {Date} date - Date to return as-is
+ * @returns {Date} Date without conversion
  */
-const convertGMTtoIST = (gmtDate) => {
-  if (!gmtDate) return gmtDate;
-  
-  const istDate = new Date(gmtDate);
-  istDate.setHours(istDate.getHours() + 5);
-  istDate.setMinutes(istDate.getMinutes() + 30);
-  
-  return istDate;
+const convertGMTtoIST = (date) => {
+  // Return date as-is since server is already in IST
+  return date;
 };
 
 /**
  * Get current date in IST
- * @returns {Date} Current date in IST
+ * @returns {Date} Current date (already in IST)
  */
 const getCurrentIST = () => {
-  const now = new Date();
-  return convertGMTtoIST(now);
+  // Return current date as-is since server is already in IST
+  return new Date();
 };
 
 /**
@@ -32,8 +28,8 @@ const getCurrentIST = () => {
 const formatISTDate = (date) => {
   if (!date) return '';
   
-  const istDate = convertGMTtoIST(date);
-  return istDate.toLocaleString('en-IN', {
+  // Format date as-is since server is already in IST
+  return date.toLocaleString('en-IN', {
     timeZone: 'Asia/Kolkata',
     year: 'numeric',
     month: '2-digit',
