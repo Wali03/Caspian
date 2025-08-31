@@ -282,12 +282,15 @@ const MyCoupons = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    // Convert to IST (GMT + 5:30)
+    const istDate = new Date(date.getTime() + (5.5 * 60 * 60 * 1000));
+    return istDate.toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      timeZone: 'Asia/Kolkata'
     });
   };
 

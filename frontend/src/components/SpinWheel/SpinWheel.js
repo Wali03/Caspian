@@ -85,7 +85,7 @@ const Pointer = styled.div`
   height: 0;
   border-left: 15px solid transparent;
   border-right: 15px solid transparent;
-  border-bottom: 40px solid ${props => props.theme.colors.accent};
+  border-top: 40px solid ${props => props.theme.colors.accent};
   z-index: 10;
   filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
 `;
@@ -230,52 +230,52 @@ const SpinWheel = () => {
   const { spinWheel: apiSpinWheel } = useAuth();
   const navigate = useNavigate();
 
-  // Define the 8 offers as wheel segments
+  // Define the 8 offers as wheel segments (must match backend OFFERS array order)
   const offers = [
     { 
-      id: 1, 
+      id: 0, 
       text: 'Free Beverage with Breakfast', 
       color: '#FF6B6B',
       icon: '☕'
     },
     { 
-      id: 2, 
+      id: 1, 
       text: '10% Off Non-Veg', 
       color: '#4ECDC4',
       icon: '🍖'
     },
     { 
-      id: 3, 
+      id: 2, 
       text: '10% Off Tandoor (Evening)', 
       color: '#45B7D1',
       icon: '🔥'
     },
     { 
-      id: 4, 
+      id: 3, 
       text: 'Free Add-on with Bowl', 
       color: '#96CEB4',
       icon: '🥗'
     },
     { 
-      id: 5, 
+      id: 4, 
       text: 'Honey Chili Potato with Chinese', 
       color: '#FFEAA7',
       icon: '🥔'
     },
     { 
-      id: 6, 
-      text: 'Chinese Meal + Honey Chili', 
+      id: 5, 
+      text: 'Thai Curry + Beverage', 
       color: '#DDA0DD',
       icon: '🥡'
     },
     { 
-      id: 7, 
+      id: 6, 
       text: '20% Off Bill (Min ₹2000)', 
       color: '#FFD93D',
       icon: '💰'
     },
     { 
-      id: 8, 
+      id: 7, 
       text: 'Free Mocktail with Biryani', 
       color: '#FF9FF3',
       icon: '🍹'
@@ -289,46 +289,82 @@ const SpinWheel = () => {
 
     setIsSpinning(true);
     
-    // Pre-select which offer will win (0-7)
-    const winningSegmentIndex = Math.floor(Math.random() * offers.length);
-    const selectedOffer = offers[winningSegmentIndex];
+    // Start infinite suspense spin - continuous spinning until backend responds
+    const suspenseRotations = 3600; // 10 full rotations (enough to last during API call)
+    const suspenseDuration = 10; // 10 seconds (longer than any reasonable API call)
+    const suspenseAngle = Math.random() * 360;
     
-    // Calculate the exact angle for this segment
-    // Arrow points to top (12 o'clock), so we need to adjust the angle
-    const segmentAngleSize = 360 / offers.length; // 45 degrees per segment
-    // Since arrow points to top, we need to rotate the wheel so the winning segment lands at top
-    const targetAngle = 360 - ((winningSegmentIndex * segmentAngleSize) + (segmentAngleSize / 2));
+    setFinalRotation(suspenseRotations + suspenseAngle);
+    setSpinDuration(suspenseDuration);
     
-    // Add full rotations for dramatic effect
-    const fullRotations = 1800; // 5 full rotations
-    const finalRot = fullRotations + targetAngle;
+    console.log('🎡 Starting infinite suspense spin...');
     
-    setFinalRotation(finalRot);
-    const duration = 3 + Math.random() * 2; // 3-5 seconds
-    setSpinDuration(duration);
-
-    console.log('🎯 Spinning to segment:', winningSegmentIndex, 'offer:', selectedOffer.text);
-
-    // Call API to generate coupon with the selected offer index
+    // Call API to get the winning offer from backend (in parallel)
     try {
-      const result = await apiSpinWheel(winningSegmentIndex);
+      const result = await apiSpinWheel();
       
-      setTimeout(() => {
-        setIsSpinning(false);
+      if (result.success) {
+        // Get the winning segment index from backend response
+        const winningSegmentIndex = result.winningSegmentIndex;
+        const selectedOffer = offers[winningSegmentIndex];
         
-        if (result.success) {
+        console.log('🎯 Backend responded! Selected segment:', winningSegmentIndex, 'offer:', selectedOffer.text);
+        
+        // Calculate the exact angle to land on the winning segment
+        const segmentAngleSize = 360 / offers.length; // 45 degrees per segment
+        
+        // Since segments are drawn starting from 12 o'clock (top), segment 0 is at the top
+        // We need to calculate how much to rotate to bring the winning segment to the top
+        const segmentCenterAngle = (winningSegmentIndex * segmentAngleSize) + (segmentAngleSize / 2);
+        
+        // To bring the winning segment to the top (12 o'clock), we need to rotate by:
+        // 360° - segmentCenterAngle (to bring it to the top)
+        const targetAngle = 360 - segmentCenterAngle;
+        
+        // Calculate current approximate position (estimate based on time elapsed)
+        const timeElapsed = Date.now() - (Date.now() - 1000); // Rough estimate
+        const currentApproxRotation = (timeElapsed / (suspenseDuration * 1000)) * suspenseRotations;
+        
+        // Add exactly 2 more full rotations as requested, then land on correct segment
+        const finalRotations = 720; // Exactly 2 full rotations
+        const finalRotation = currentApproxRotation + finalRotations + targetAngle;
+        
+        // Set final animation duration
+        const finalDuration = 2.5; // 2.5 seconds for the final spin
+        
+        console.log('📐 Angle calculations:');
+        console.log('   - Segment angle size:', segmentAngleSize, 'degrees');
+        console.log('   - Winning segment center angle:', segmentCenterAngle, 'degrees');
+        console.log('   - Target rotation to bring to top:', targetAngle, 'degrees');
+        console.log('   - Estimated current rotation:', currentApproxRotation, 'degrees');
+        console.log('   - Final rotation (current + 2 rotations + target):', finalRotation, 'degrees');
+        console.log('   - Final animation duration:', finalDuration, 'seconds');
+        
+        // Immediately start the final spin to correct position
+        console.log('🎯 Backend responded! Now spinning to winning segment...');
+        setFinalRotation(finalRotation);
+        setSpinDuration(finalDuration);
+        
+        // Stop spinning after final animation completes and show result
+        setTimeout(() => {
+          setIsSpinning(false);
+          
           setWonCoupon({
             ...result.coupon,
             selectedOffer
           });
           setShowWinModal(true);
-        }
-      }, (duration + 1) * 1000);
+        }, (finalDuration + 0.5) * 1000);
+        
+      } else {
+        // If API fails, stop spinning
+        setIsSpinning(false);
+      }
       
     } catch (error) {
-      setTimeout(() => {
-        setIsSpinning(false);
-      }, (duration + 1) * 1000);
+      console.error('Spin wheel error:', error);
+      // If API fails, stop spinning
+      setIsSpinning(false);
     }
   };
 
@@ -344,8 +380,10 @@ const SpinWheel = () => {
   // Generate SVG segments
   const generateSegments = () => {
     return offers.map((offer, index) => {
-      const startAngle = index * segmentAngle;
-      const endAngle = (index + 1) * segmentAngle;
+      // SVG coordinate system: 0° is at 3 o'clock, we need to start from 12 o'clock (top)
+      // So we need to offset by -90° to start from the top
+      const startAngle = (index * segmentAngle) - 90;
+      const endAngle = ((index + 1) * segmentAngle) - 90;
       
       const startAngleRad = (startAngle * Math.PI) / 180;
       const endAngleRad = (endAngle * Math.PI) / 180;
@@ -373,6 +411,11 @@ const SpinWheel = () => {
       const textRadius = radius * 0.7;
       const textX = center + textRadius * Math.cos(textAngleRad);
       const textY = center + textRadius * Math.sin(textAngleRad);
+
+      // Debug log for segment positions
+      if (index === 0 || index === 1) {
+        console.log(`🎯 Segment ${index} (${offer.text}): start=${startAngle}°, end=${endAngle}°, center=${textAngle}°`);
+      }
 
       return (
         <g key={offer.id}>

@@ -112,14 +112,29 @@ const GlobalStyles = createGlobalStyle`
 
   .Toastify__toast--success {
     background: ${props => props.theme.colors.success};
+    color: white !important;
+    font-weight: 600;
   }
 
   .Toastify__toast--error {
     background: ${props => props.theme.colors.error};
+    color: white !important;
+    font-weight: 600;
   }
 
   .Toastify__toast--warning {
     background: ${props => props.theme.colors.warning};
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .Toastify__toast-body {
+    color: white !important;
+    font-weight: 600;
+  }
+
+  .Toastify__close-button {
+    color: white !important;
   }
 `;
 

@@ -173,16 +173,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Coupon related functions
-  const spinWheel = async (selectedOfferIndex = null) => {
+  const spinWheel = async () => {
     try {
-      const response = await api.post('/coupons/spin', {
-        selectedOfferIndex
-      });
+      const response = await api.post('/coupons/spin');
       if (response.data.success) {
         // Refresh user profile to get updated coupons
         await refreshUserProfile();
         toast.success(response.data.message);
-        return { success: true, coupon: response.data.coupon };
+        return { 
+          success: true, 
+          coupon: response.data.coupon,
+          winningSegmentIndex: response.data.winningSegmentIndex
+        };
       }
     } catch (error) {
       const message = error.response?.data?.message || 'Spin failed';
