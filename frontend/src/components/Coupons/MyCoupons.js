@@ -282,9 +282,8 @@ const MyCoupons = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    // Convert to IST (GMT + 5:30)
-    const istDate = new Date(date.getTime() + (5.5 * 60 * 60 * 1000));
-    return istDate.toLocaleDateString('en-IN', {
+    // No need to convert to IST since backend already stores IST times
+    return date.toLocaleDateString('en-IN', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
