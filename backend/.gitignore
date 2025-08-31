@@ -15,6 +15,9 @@ yarn-error.log*
 logs
 *.log
 
+#PEM files
+*.pem
+
 # Runtime data
 pids
 *.pid

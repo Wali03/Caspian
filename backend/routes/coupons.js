@@ -157,7 +157,7 @@ const spinWheel = async (req, res) => {
 
     // Populate user data for response
     console.log('📝 Populating user data...');
-    await coupon.populate('user', 'name mobile');
+    await coupon.populate('user', 'name email');
 
     res.status(201).json({
       success: true,
@@ -301,7 +301,7 @@ const verifyCoupon = async (req, res) => {
     const coupon = await Coupon.findOne({
       code: code.toUpperCase(),
       isActive: true
-    }).populate('user', 'name mobile');
+    }).populate('user', 'name email');
 
     if (!coupon) {
       return res.status(404).json({
