@@ -455,9 +455,9 @@ const SpinWheel = () => {
           <InfoItem>Only one bill can be generated per table</InfoItem>
           <InfoItem>Offer applicable on the total bill</InfoItem>
           <InfoItem>Code valid for 7 days after issuance</InfoItem>
-          <InfoItem>Code will only be accepted once on one number/email</InfoItem>
+          <InfoItem>Code will only be accepted once on one email</InfoItem>
           <InfoItem>Breakfast item code applicable only at breakfast time</InfoItem>
-          <InfoItem>Maximum 3 spins allowed per day</InfoItem>
+          <InfoItem>Maximum 1 spin allowed per day</InfoItem>
         </InfoList>
       </InfoSection>
 
