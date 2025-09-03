@@ -31,7 +31,29 @@ const Title = styled.h1`
 const Subtitle = styled.p`
   font-size: 18px;
   color: ${props => props.theme.colors.textLight};
+  margin-bottom: 20px;
+`;
+
+const RestaurantNotice = styled.div`
+  background: linear-gradient(135deg, #FFF3CD 0%, #FFEAA7 100%);
+  border: 1px solid #F1C40F;
+  border-radius: 12px;
+  padding: 16px;
   margin-bottom: 40px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(241, 196, 15, 0.2);
+  
+  strong {
+    color: #B7950B;
+    font-weight: 700;
+  }
+  
+  p {
+    color: #7D6608;
+    margin: 8px 0 0 0;
+    font-size: 16px;
+    line-height: 1.5;
+  }
 `;
 
 const TabContainer = styled.div`
@@ -320,6 +342,11 @@ const MyCoupons = () => {
         <Subtitle>
           Manage and redeem your earned coupons from CASPIAN spinning wheel
         </Subtitle>
+        
+        <RestaurantNotice>
+          <strong>🍽️ Restaurant Use Only</strong>
+          <p>All coupons must be redeemed at CASPIAN restaurant. Show your coupon to the waiter to apply it to your bill.</p>
+        </RestaurantNotice>
       </Header>
 
       <TabContainer>
@@ -464,9 +491,21 @@ const MyCoupons = () => {
               <h3 style={{ marginBottom: '16px', color: '#2B5797' }}>
                 🎯 Use Coupon?
               </h3>
-              <p style={{ marginBottom: '20px', color: '#7F8C8D' }}>
+              <p style={{ marginBottom: '12px', color: '#7F8C8D' }}>
                 Are you sure you want to use this coupon? This action cannot be undone.
               </p>
+              <div style={{ 
+                marginBottom: '20px', 
+                padding: '12px', 
+                backgroundColor: '#FFF3CD', 
+                border: '1px solid #FFEAA7', 
+                borderRadius: '8px',
+                color: '#B7950B',
+                fontSize: '14px',
+                textAlign: 'center'
+              }}>
+                <strong>⚠️ Important:</strong> This coupon can only be used at the restaurant. Please show this to your waiter to apply it to your bill.
+              </div>
               <div style={{ fontWeight: 'bold', marginBottom: '20px' }}>
                 {confirmModal.coupon?.code}
               </div>

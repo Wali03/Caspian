@@ -436,10 +436,40 @@ const SpinWheel = () => {
             transform={`rotate(${textAngle}, ${textX}, ${textY})`}
           >
             <tspan x={textX} dy="-8">{offer.icon}</tspan>
-            <tspan x={textX} dy="16" fontSize="11">{offer.text.substring(0, 15)}</tspan>
-            {offer.text.length > 15 && (
-              <tspan x={textX} dy="12" fontSize="11">{offer.text.substring(15)}</tspan>
-            )}
+            {(() => {
+              // Smart word wrapping - split by words, not characters
+              const words = offer.text.split(' ');
+              const lines = [];
+              let currentLine = '';
+              
+              words.forEach(word => {
+                if ((currentLine + word).length <= 16) {
+                  currentLine += (currentLine ? ' ' : '') + word;
+                } else {
+                  if (currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                  } else {
+                    lines.push(word);
+                  }
+                }
+              });
+              
+              if (currentLine) {
+                lines.push(currentLine);
+              }
+              
+              return lines.map((line, lineIndex) => (
+                <tspan 
+                  key={lineIndex}
+                  x={textX} 
+                  dy={lineIndex === 0 ? "16" : "12"} 
+                  fontSize="11"
+                >
+                  {line}
+                </tspan>
+              ));
+            })()}
           </text>
         </g>
       );
